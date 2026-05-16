@@ -29,7 +29,7 @@ from pydantic import BaseModel
 # ── Import our feature extractor ─────────────────────────────────────────────
 # In production this file sits next to main.py
 try:
-    from backend.feature_extractor import extract_features, extract_features_from_address
+    from feature_extractor import extract_features, extract_features_from_address
 except ImportError:
     raise RuntimeError("feature_extractor.py must be in the same directory as main.py")
 
@@ -369,7 +369,7 @@ def analyze(req: AnalyzeRequest):
             )
 
         # Fetch source from Etherscan V2
-        from backend.feature_extractor import fetch_source_code
+        from feature_extractor import fetch_source_code
         source_code = fetch_source_code(raw_input, ETHERSCAN_API_KEY, req.chain)
 
         if not source_code:
