@@ -55,10 +55,12 @@ app.add_middleware(
 
 # ── Load model artifacts ──────────────────────────────────────────────────────
 
-MODEL_PATH     = os.getenv("MODEL_PATH",     "models/rugguard_v2.pkl")
-COLS_PATH      = os.getenv("COLS_PATH",      "models/feature_columns.pkl")
-EXPLAINER_PATH = os.getenv("EXPLAINER_PATH", "models/shap_explainer.pkl")
-METRICS_PATH   = os.getenv("METRICS_PATH",   "models/metrics.json")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+MODEL_PATH = os.path.join(BASE_DIR, "models", "rugguard_v2.pkl")
+COLS_PATH = os.path.join(BASE_DIR, "models", "feature_columns.pkl")
+EXPLAINER_PATH = os.path.join(BASE_DIR, "models", "shap_explainer.pkl")
+METRICS_PATH = os.path.join(BASE_DIR, "models", "metrics.json")
 ETHERSCAN_API_KEY  = os.getenv("ETHERSCAN_API_KEY", "")
 print("API KEY LOADED:", ETHERSCAN_API_KEY)
 model     = None

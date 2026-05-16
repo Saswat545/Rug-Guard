@@ -1,6 +1,6 @@
-models/
+# models/
 data/
-*.pkl
+# *.pkl
 *.csv
 __pycache__/
 .env
