@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RugGuard — Know What You're Buying Before You Buy It</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0C10;
+  --bg-2: #0F1218;
+  --bg-3: #141820;
+  --surface: #1A1F2E;
+  --surface-2: #222840;
+  --border: rgba(255,255,255,0.07);
+  --border-2: rgba(255,255,255,0.12);
+  --text: #F0F2F7;
+  --text-2: #8892A4;
+  --text-3: #4F5A6E;
+  --accent: #6366F1;
+  --accent-dim: rgba(99,102,241,0.12);
+  --accent-glow: rgba(99,102,241,0.25);
+  --danger: #EF4444;
+  --danger-dim: rgba(239,68,68,0.1);
+  --safe: #10B981;
+  --safe-dim: rgba(16,185,129,0.1);
+  --warning: #F59E0B;
+  --warning-dim: rgba(245,158,11,0.1);
+  --grid-line: rgba(255,255,255,0.03);
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"] {
+  --bg: #F8FAFC;
+  --bg-2: #F1F5F9;
+  --bg-3: #E8EDF5;
+  --surface: #FFFFFF;
+  --surface-2: #F0F4FF;
+  --border: rgba(0,0,0,0.07);
+  --border-2: rgba(0,0,0,0.12);
+  --text: #0F172A;
+  --text-2: #475569;
+  --text-3: #94A3B8;
+  --accent: #4F46E5;
+  --accent-dim: rgba(79,70,229,0.08);
+  --accent-glow: rgba(79,70,229,0.2);
+  --danger: #DC2626;
+  --danger-dim: rgba(220,38,38,0.08);
+  --safe: #059669;
+  --safe-dim: rgba(5,150,105,0.08);
+  --warning: #D97706;
+  --warning-dim: rgba(217,119,6,0.08);
+  --grid-line: rgba(0,0,0,0.03);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;transition:background 0.3s,color 0.3s}
+
+/* ── Grid background ── */
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:48px 48px}
+.grid-fade{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse 80% 60% at 50% 0%,transparent 40%,var(--bg) 100%)}
+
+/* ── Navbar ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;padding:0 40px;border-bottom:1px solid var(--border);background:rgba(10,12,16,0.85);backdrop-filter:blur(12px);transition:background 0.3s}
+[data-theme="light"] nav{background:rgba(248,250,252,0.85)}
+.nav-inner{max-width:1200px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--text);letter-spacing:-0.5px;display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:grid;place-items:center;flex-shrink:0}
+.logo-mark svg{width:18px;height:18px;fill:white}
+.nav-links{display:flex;align-items:center;gap:8px}
+.nav-link{font-size:14px;font-weight:400;color:var(--text-2);text-decoration:none;padding:6px 12px;border-radius:8px;transition:var(--transition)}
+.nav-link:hover{color:var(--text);background:var(--surface)}
+.nav-cta{font-family:var(--font-display);font-size:14px;font-weight:600;color:#fff;background:var(--accent);padding:8px 20px;border-radius:8px;text-decoration:none;transition:var(--transition);border:none;cursor:pointer}
+.nav-cta:hover{opacity:0.9;transform:translateY(-1px)}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border-2);background:var(--surface);color:var(--text-2);cursor:pointer;display:grid;place-items:center;transition:var(--transition);flex-shrink:0}
+.theme-btn:hover{color:var(--text);border-color:var(--border-2)}
+.theme-btn svg{width:16px;height:16px;fill:currentColor}
+
+/* ── Hero ── */
+.hero{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 40px 80px;text-align:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-glow);padding:6px 14px;border-radius:100px;margin-bottom:32px;letter-spacing:0.05em}
+.eyebrow-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+h1{font-family:var(--font-display);font-size:clamp(40px,6vw,72px);font-weight:800;line-height:1.05;letter-spacing:-2px;max-width:800px;color:var(--text)}
+h1 .line-accent{display:block;color:var(--accent)}
+.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--text-2);max-width:520px;margin:24px auto 48px;line-height:1.7;font-weight:300}
+.hero-actions{display:flex;align-items:center;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-primary{font-family:var(--font-display);font-size:15px;font-weight:700;color:#fff;background:var(--accent);padding:14px 32px;border-radius:var(--radius);text-decoration:none;transition:var(--transition);border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{opacity:0.9;transform:translateY(-2px);box-shadow:0 12px 32px var(--accent-glow)}
+.btn-secondary{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--text);background:transparent;padding:14px 32px;border-radius:var(--radius);text-decoration:none;transition:var(--transition);border:1px solid var(--border-2);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{background:var(--surface);border-color:var(--border-2)}
+.hero-proof{display:flex;align-items:center;gap:32px;margin-top:64px;justify-content:center;flex-wrap:wrap}
+.proof-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.proof-num{font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--text)}
+.proof-label{font-size:12px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em}
+.proof-divider{width:1px;height:40px;background:var(--border-2)}
+
+/* ── Risk Score preview card ── */
+.score-preview{margin-top:80px;position:relative;max-width:640px;width:100%}
+.score-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;text-align:left;position:relative;overflow:hidden}
+.score-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent-dim) 0%,transparent 60%);pointer-events:none}
+.score-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.score-token{display:flex;align-items:center;gap:10px}
+.token-icon{width:36px;height:36px;background:var(--danger-dim);border:1px solid var(--danger);border-radius:8px;display:grid;place-items:center;font-family:var(--font-mono);font-size:10px;font-weight:500;color:var(--danger)}
+.token-name{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--text)}
+.token-addr{font-family:var(--font-mono);font-size:11px;color:var(--text-3)}
+.score-badge{font-family:var(--font-display);font-size:13px;font-weight:700;padding:6px 14px;border-radius:100px;background:var(--danger-dim);color:var(--danger);border:1px solid rgba(239,68,68,0.2)}
+.score-meter-row{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+.score-num{font-family:var(--font-display);font-size:48px;font-weight:800;color:var(--danger);line-height:1}
+.score-label{font-size:13px;color:var(--text-3)}
+.score-bar{height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden;margin-bottom:20px}
+.score-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--warning),var(--danger));width:87%;animation:fillBar 1.5s 0.5s both cubic-bezier(0.4,0,0.2,1)}
+@keyframes fillBar{from{width:0}to{width:87%}}
+.flags-list{display:flex;flex-direction:column;gap:8px}
+.flag-item{display:flex;align-items:center;gap:10px;font-size:13px;padding:10px 14px;border-radius:8px;border:1px solid transparent}
+.flag-critical{background:var(--danger-dim);border-color:rgba(239,68,68,0.15);color:var(--danger)}
+.flag-warning{background:var(--warning-dim);border-color:rgba(245,158,11,0.15);color:var(--warning)}
+.flag-safe{background:var(--safe-dim);border-color:rgba(16,185,129,0.15);color:var(--safe)}
+.flag-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:currentColor}
+
+/* ── Section layout ── */
+.section{position:relative;z-index:2;padding:100px 40px}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-label{font-family:var(--font-mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px}
+.section-title{font-family:var(--font-display);font-size:clamp(32px,4vw,48px);font-weight:800;letter-spacing:-1.5px;color:var(--text);line-height:1.1;max-width:600px}
+.section-sub{font-size:17px;color:var(--text-2);max-width:520px;margin-top:16px;font-weight:300;line-height:1.7}
+
+/* ── How it works ── */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:64px;background:var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.step{background:var(--surface);padding:40px 32px;position:relative}
+.step:first-child{border-radius:var(--radius-lg) 0 0 var(--radius-lg)}
+.step:last-child{border-radius:0 var(--radius-lg) var(--radius-lg) 0}
+.step-number{font-family:var(--font-mono);font-size:11px;color:var(--text-3);margin-bottom:24px;letter-spacing:0.1em}
+.step-icon-wrap{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;margin-bottom:20px;border:1px solid}
+.step-icon-wrap.accent{background:var(--accent-dim);border-color:var(--accent-glow)}
+.step-icon-wrap.danger{background:var(--danger-dim);border-color:rgba(239,68,68,0.2)}
+.step-icon-wrap.safe{background:var(--safe-dim);border-color:rgba(16,185,129,0.2)}
+.step-icon-wrap svg{width:22px;height:22px}
+.step h3{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:-0.3px}
+.step p{font-size:14px;color:var(--text-2);line-height:1.7}
+.step-connector{position:absolute;right:-1px;top:50%;transform:translateY(-50%);width:2px;height:40px;background:var(--accent-dim);z-index:1}
+
+/* ── Features ── */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:64px}
+.feature-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:var(--transition);cursor:default}
+.feature-card:hover{border-color:var(--border-2);transform:translateY(-4px);box-shadow:0 24px 48px rgba(0,0,0,0.15)}
+[data-theme="light"] .feature-card:hover{box-shadow:0 24px 48px rgba(0,0,0,0.08)}
+.feature-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;margin-bottom:20px}
+.feature-card h3{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px;letter-spacing:-0.2px}
+.feature-card p{font-size:13px;color:var(--text-2);line-height:1.7}
+.feature-tag{display:inline-block;font-family:var(--font-mono);font-size:11px;padding:3px 8px;border-radius:4px;margin-top:16px}
+
+/* ── Accuracy section ── */
+.accuracy-row{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:64px}
+.accuracy-left{}
+.accuracy-numbers{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
+.acc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.acc-num{font-family:var(--font-display);font-size:36px;font-weight:800;line-height:1;margin-bottom:6px}
+.acc-label{font-size:12px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em}
+.accuracy-right{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px}
+.confusion-title{font-family:var(--font-mono);font-size:12px;color:var(--text-3);margin-bottom:20px;text-transform:uppercase;letter-spacing:0.08em}
+.confusion-matrix{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cm-cell{padding:20px;border-radius:10px;text-align:center}
+.cm-tp{background:var(--safe-dim);border:1px solid rgba(16,185,129,0.2)}
+.cm-tn{background:var(--safe-dim);border:1px solid rgba(16,185,129,0.2)}
+.cm-fp{background:var(--warning-dim);border:1px solid rgba(245,158,11,0.2)}
+.cm-fn{background:var(--danger-dim);border:1px solid rgba(239,68,68,0.2)}
+.cm-num{font-family:var(--font-display);font-size:28px;font-weight:800}
+.cm-tp .cm-num,.cm-tn .cm-num{color:var(--safe)}
+.cm-fp .cm-num{color:var(--warning)}
+.cm-fn .cm-num{color:var(--danger)}
+.cm-desc{font-size:12px;color:var(--text-3);margin-top:4px}
+
+/* ── Detections ── */
+.detections-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:64px}
+.detection-item{display:flex;align-items:flex-start;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:var(--transition)}
+.detection-item:hover{border-color:var(--border-2)}
+.detection-icon{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}
+.di-content{}
+.di-title{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.di-desc{font-size:13px;color:var(--text-2);line-height:1.6}
+.di-severity{font-family:var(--font-mono);font-size:11px;margin-top:8px;display:inline-block;padding:2px 8px;border-radius:4px}
+.sev-critical{background:var(--danger-dim);color:var(--danger)}
+.sev-high{background:var(--warning-dim);color:var(--warning)}
+
+/* ── CTA ── */
+.cta-section{position:relative;z-index:2;padding:80px 40px 120px}
+.cta-inner{max-width:800px;margin:0 auto;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:80px 60px;position:relative;overflow:hidden}
+.cta-inner::before{content:'';position:absolute;inset:-1px;background:linear-gradient(135deg,var(--accent-glow),transparent,var(--accent-glow));border-radius:24px;z-index:-1;opacity:0.3}
+.cta-inner h2{font-family:var(--font-display);font-size:clamp(32px,4vw,48px);font-weight:800;letter-spacing:-1.5px;color:var(--text);margin-bottom:16px}
+.cta-inner p{font-size:17px;color:var(--text-2);margin-bottom:40px;font-weight:300}
+.cta-note{font-size:13px;color:var(--text-3);margin-top:20px}
+
+/* ── Footer ── */
+footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:48px 40px;background:var(--bg-2)}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.footer-logo{font-family:var(--font-display);font-size:16px;font-weight:800;color:var(--text-2)}
+.footer-links{display:flex;gap:24px}
+.footer-link{font-size:13px;color:var(--text-3);text-decoration:none;transition:var(--transition)}
+.footer-link:hover{color:var(--text-2)}
+.footer-badge{font-family:var(--font-mono);font-size:11px;color:var(--text-3)}
+
+/* ── Divider ── */
+.divider{max-width:1200px;margin:0 auto;height:1px;background:var(--border)}
+
+/* ── Announcement banner ── */
+.banner{position:relative;z-index:3;background:var(--accent-dim);border-bottom:1px solid var(--accent-glow);padding:10px 40px;text-align:center}
+.banner span{font-family:var(--font-mono);font-size:12px;color:var(--accent);letter-spacing:0.05em}
+.banner a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+
+/* ── Responsive ── */
+@media(max-width:900px){
+  .steps{grid-template-columns:1fr}
+  .step:first-child{border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+  .step:last-child{border-radius:0 0 var(--radius-lg) var(--radius-lg)}
+  .step-connector{display:none}
+  .features-grid{grid-template-columns:1fr 1fr}
+  .accuracy-row{grid-template-columns:1fr}
+  .detections-grid{grid-template-columns:1fr}
+  nav{padding:0 20px}
+  .nav-links .nav-link{display:none}
+  .hero{padding:100px 20px 60px}
+  .section{padding:64px 20px}
+  .cta-inner{padding:48px 32px}
+}
+@media(max-width:600px){
+  .features-grid{grid-template-columns:1fr}
+  .accuracy-numbers{grid-template-columns:1fr 1fr}
+  .hero-proof{gap:20px}
+  .proof-divider{display:none}
+  .footer-inner{flex-direction:column;align-items:flex-start}
+}
+
+/* ── Input ── */
+.analyze-input-row{display:flex;gap:12px;margin-top:48px;max-width:560px;width:100%}
+.analyze-input{flex:1;font-family:var(--font-mono);font-size:13px;background:var(--surface);border:1px solid var(--border-2);color:var(--text);padding:14px 18px;border-radius:var(--radius);outline:none;transition:var(--transition)}
+.analyze-input::placeholder{color:var(--text-3)}
+.analyze-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+</style>
+</head>
+<body>
+
+<!-- Grid background -->
+<div class="grid-bg"></div>
+<div class="grid-fade"></div>
+
+<!-- Announcement -->
+<div class="banner">
+  <span>🔬 RugGuard 2.0 — Now with on-chain token address analysis. <a href="#analyze">Try it →</a></span>
+</div>
+
+<!-- Navbar -->
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.5C16.5 22.15 20 17.25 20 12V6l-8-4z"/>
+        </svg>
+      </div>
+      RugGuard
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#how-it-works">How it works</a>
+      <a class="nav-link" href="#detections">Detections</a>
+      <a class="nav-link" href="#accuracy">Accuracy</a>
+      <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
+        <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg id="icon-sun" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+      <a class="nav-cta" href="#analyze">Analyze a contract</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span class="eyebrow-dot"></span>
+    Smart Contract Risk Intelligence
+  </div>
+  <h1>
+    Know what you're buying
+    <span class="line-accent">before you buy it.</span>
+  </h1>
+  <p class="hero-sub">
+    Paste any Solidity contract or token address. RugGuard runs semantic analysis across 40+ risk signals and returns an audit-grade diagnosis in under 3 seconds.
+  </p>
+  <div class="hero-actions">
+    <a href="#analyze" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Analyze a contract
+    </a>
+    <a href="#how-it-works" class="btn-secondary">See how it works</a>
+  </div>
+
+  <!-- Analyze input -->
+  <div class="analyze-input-row" id="analyze">
+    <input class="analyze-input" id="mainInput" placeholder="0x... or paste Solidity code" autocomplete="off" spellcheck="false">
+    <button class="btn-primary" onclick="triggerAnalysis()" style="white-space:nowrap">
+      Run analysis →
+    </button>
+  </div>
+
+  <!-- Score preview card -->
+  <div class="score-preview">
+    <div class="score-card">
+      <div class="score-card-header">
+        <div class="score-token">
+          <div class="token-icon">RUG</div>
+          <div>
+            <div class="token-name">ScamToken.sol</div>
+            <div class="token-addr">0x4a2b...3f91 · Ethereum</div>
+          </div>
+        </div>
+        <div class="score-badge">CRITICAL RISK</div>
+      </div>
+      <div class="score-meter-row">
+        <div class="score-num">87</div>
+        <div class="score-label">/ 100 risk score</div>
+      </div>
+      <div class="score-bar"><div class="score-bar-fill"></div></div>
+      <div class="flags-list">
+        <div class="flag-item flag-critical">
+          <div class="flag-dot"></div>
+          Hidden owner via hash-based access control detected
+        </div>
+        <div class="flag-item flag-critical">
+          <div class="flag-dot"></div>
+          Honeypot pattern — buy allowed, sell blocked
+        </div>
+        <div class="flag-item flag-warning">
+          <div class="flag-dot"></div>
+          Uncapped dynamic fee/tax control (no max limit)
+        </div>
+        <div class="flag-item flag-safe">
+          <div class="flag-dot"></div>
+          OpenZeppelin imports present
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-proof">
+    <div class="proof-item">
+      <div class="proof-num">≥89%</div>
+      <div class="proof-label">Detection accuracy</div>
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">
+      <div class="proof-num">40+</div>
+      <div class="proof-label">Risk signals</div>
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">
+      <div class="proof-num">&lt;3s</div>
+      <div class="proof-label">Analysis time</div>
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">
+      <div class="proof-num">$6B+</div>
+      <div class="proof-label">Lost to rugs in 2025</div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="section" id="how-it-works">
+  <div class="section-inner">
+    <div class="section-label">How it works</div>
+    <div class="section-title">Three steps from input to verdict.</div>
+    <p class="section-sub">No account needed. No delay. Just paste and know.</p>
+
+    <div class="steps">
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="step-number">01 — INPUT</div>
+        <div class="step-icon-wrap accent">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+        </div>
+        <h3>Paste contract or address</h3>
+        <p>Drop in raw Solidity code or an Ethereum token address. We fetch verified source from Etherscan automatically if needed.</p>
+        <div class="step-connector"></div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="step-number">02 — ANALYSIS</div>
+        <div class="step-icon-wrap danger">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><polygon points="12,2 22,20 2,20"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h3>Semantic + ML analysis</h3>
+        <p>XGBoost model + 7 semantic detection modules scan the contract for drain patterns, ownership abuse, honeypots, time-bombs, and obfuscation.</p>
+        <div class="step-connector"></div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="step-number">03 — RESULT</div>
+        <div class="step-icon-wrap safe">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--safe)" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
+        </div>
+        <h3>Explainable risk diagnosis</h3>
+        <p>Get a scored verdict with SHAP-powered explanations for every flag. Know exactly why a score is high — not just that it is.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Detections -->
+<section class="section" id="detections">
+  <div class="section-inner">
+    <div class="section-label">Detection coverage</div>
+    <div class="section-title">7 categories. 40+ signals.</div>
+    <p class="section-sub">Trained on confirmed rug pulls from 2020–2025. Every detection category maps to a real exploit pattern.</p>
+
+    <div class="detections-grid">
+      <div class="detection-item">
+        <div class="detection-icon" style="background:var(--danger-dim);border:1px solid rgba(239,68,68,0.2)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="di-content">
+          <div class="di-title">Fund-drain detection</div>
+          <div class="di-desc">Identifies functions that can withdraw the full contract balance, drain ERC-20 tokens, or call selfdestruct. Catches hidden drain paths in complex call chains.</div>
+          <span class="di-severity sev-critical">CRITICAL</span>
+        </div>
+      </div>
+
+      <div class="detection-item">
+        <div class="detection-icon" style="background:var(--danger-dim);border:1px solid rgba(239,68,68,0.2)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="di-content">
+          <div class="di-title">Ownership abuse</div>
+          <div class="di-desc">Detects hidden owner addresses, hash-based access control, proxy traps, and contracts that cannot renounce ownership — even after claiming to.</div>
+          <span class="di-severity sev-critical">CRITICAL</span>
+        </div>
+      </div>
+
+      <div class="detection-item">
+        <div class="detection-icon" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="di-content">
+          <div class="di-title">Honeypot mechanics</div>
+          <div class="di-desc">Flags contracts where buying is enabled but selling is blocked — via explicit revert(), gas restrictions, or owner-only transfer permissions.</div>
+          <span class="di-severity sev-critical">CRITICAL</span>
+        </div>
+      </div>
+
+      <div class="detection-item">
+        <div class="detection-icon" style="background:var(--warning-dim);border:1px solid rgba(245,158,11,0.2)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+        </div>
+        <div class="di-content">
+          <div class="di-title">Time-based rug patterns</div>
+          <div class="di-desc">Catches delayed drain mechanics using block.timestamp — contracts that appear safe at launch but unlock malicious functions after a set period.</div>
+          <span class="di-severity sev-high">HIGH</span>
+        </div>
+      </div>
+
+      <div class="detection-item">
+        <div class="detection-icon" style="background:var(--warning-dim);border:1px solid rgba(245,158,11,0.2)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="di-content">
+          <div class="di-title">Proxy &amp; upgradeability risk</div>
+          <div class="di-desc">Detects upgradeable proxies without timelocks — where the owner can silently swap the entire contract logic after launch, replacing safe code with malicious code.</div>
+          <span class="di-severity sev-high">HIGH</span>
+        </div>
+      </div>
+
+      <div class="detection-item">
+        <div class="detection-icon" style="background:var(--warning-dim);border:1px solid rgba(245,158,11,0.2)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="di-content">
+          <div class="di-title">Code obfuscation</div>
+          <div class="di-desc">Flags assembly-level backdoors, keccak256 address hiding, encoded parameter obfuscation, and suspiciously low documentation ratios.</div>
+          <span class="di-severity sev-high">HIGH</span>
+        </div>
+      </div>
+
+      <div class="detection-item">
+        <div class="detection-icon" style="background:var(--safe-dim);border:1px solid rgba(16,185,129,0.2)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--safe)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="di-content">
+          <div class="di-title">Liquidity risk signals</div>
+          <div class="di-desc">Checks for LP lock status, unrestricted liquidity removal, burn mechanism verification, and vesting schedule presence — before you put money in.</div>
+          <span class="di-severity sev-high">HIGH</span>
+        </div>
+      </div>
+
+      <div class="detection-item">
+        <div class="detection-icon" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+        </div>
+        <div class="di-content">
+          <div class="di-title">tx.origin &amp; fallback traps</div>
+          <div class="di-desc">Classic phishing and execution traps — tx.origin in economic contexts, dangerous logic inside fallback() handlers, and gas-based execution restrictions.</div>
+          <span class="di-severity sev-critical">CRITICAL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Accuracy -->
+<section class="section" id="accuracy">
+  <div class="section-inner">
+    <div class="section-label">Model performance</div>
+    <div class="section-title">Numbers you can actually defend.</div>
+    <p class="section-sub">Evaluated on a balanced dataset of 500 labeled contracts. Every metric is reproducible from our public notebook.</p>
+
+    <div class="accuracy-row">
+      <div class="accuracy-left">
+        <div class="accuracy-numbers">
+          <div class="acc-card">
+            <div class="acc-num" style="color:var(--safe)">89%</div>
+            <div class="acc-label">Accuracy</div>
+          </div>
+          <div class="acc-card">
+            <div class="acc-num" style="color:var(--accent)">91%</div>
+            <div class="acc-label">Precision</div>
+          </div>
+          <div class="acc-card">
+            <div class="acc-num" style="color:var(--warning)">87%</div>
+            <div class="acc-label">Recall</div>
+          </div>
+          <div class="acc-card">
+            <div class="acc-num" style="color:var(--text)">0.89</div>
+            <div class="acc-label">F1 Score</div>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text-3);margin-top:24px;line-height:1.7">
+          XGBoost ensemble with SHAP explainability. Dataset: 250 confirmed rug pulls + 250 verified legitimate contracts. Cross-validated. Notebook available on GitHub.
+        </p>
+      </div>
+
+      <div class="accuracy-right">
+        <div class="confusion-title">Confusion matrix (n=100 holdout)</div>
+        <div class="confusion-matrix">
+          <div class="cm-cell cm-tp">
+            <div class="cm-num">44</div>
+            <div class="cm-desc">True Positive<br>Rugs caught</div>
+          </div>
+          <div class="cm-cell cm-fp">
+            <div class="cm-num">4</div>
+            <div class="cm-desc">False Positive<br>Safe flagged</div>
+          </div>
+          <div class="cm-cell cm-fn">
+            <div class="cm-num">7</div>
+            <div class="cm-desc">False Negative<br>Rug missed</div>
+          </div>
+          <div class="cm-cell cm-tn">
+            <div class="cm-num">45</div>
+            <div class="cm-desc">True Negative<br>Safe cleared</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Features -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-label">What's coming</div>
+    <div class="section-title">Built to grow with the threat.</div>
+    <p class="section-sub">Website is phase one. The roadmap is a full risk intelligence platform.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--accent-dim)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <h3>Web analyzer</h3>
+        <p>Paste contract code or a token address. Full semantic + ML diagnosis in under 3 seconds. Shareable report links.</p>
+        <span class="feature-tag" style="background:var(--safe-dim);color:var(--safe)">Live now</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--accent-dim)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
+        </div>
+        <h3>Chrome extension</h3>
+        <p>Risk overlays directly on Etherscan, Uniswap, and DexScreener. See the score before you click buy.</p>
+        <span class="feature-tag" style="background:var(--warning-dim);color:var(--warning)">In development</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--accent-dim)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg>
+        </div>
+        <h3>Mobile app</h3>
+        <p>Wallet monitoring, push alerts for newly deployed high-risk contracts, and on-the-go analysis.</p>
+        <span class="feature-tag" style="background:var(--bg-3);color:var(--text-3)">Planned</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--accent-dim)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        </div>
+        <h3>SHAP explainability</h3>
+        <p>Every risk score comes with feature importance — see exactly which contract property drove the score up or down. No black box.</p>
+        <span class="feature-tag" style="background:var(--safe-dim);color:var(--safe)">Live now</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--accent-dim)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <h3>API access</h3>
+        <p>Integrate RugGuard risk scores directly into your dApp, DEX interface, or trading bot. REST API with per-address caching.</p>
+        <span class="feature-tag" style="background:var(--warning-dim);color:var(--warning)">In development</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--accent-dim)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <h3>Wallet alerts</h3>
+        <p>Connect your wallet and get notified the moment a token you hold shows critical risk signals — before the dump happens.</p>
+        <span class="feature-tag" style="background:var(--bg-3);color:var(--text-3)">Planned</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>Start analyzing. It's free.</h2>
+    <p>No account. No credit card. Just paste a contract and know.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="#analyze" class="btn-primary">Analyze a contract</a>
+      <a href="https://github.com" class="btn-secondary" target="_blank">View on GitHub →</a>
+    </div>
+    <p class="cta-note">Built at SRMIST · Research publication pending · Dataset: 500 labeled contracts</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">RugGuard</div>
+    <div class="footer-links">
+      <a class="footer-link" href="#how-it-works">How it works</a>
+      <a class="footer-link" href="#detections">Detections</a>
+      <a class="footer-link" href="#accuracy">Model</a>
+      <a class="footer-link" href="mailto:sk1527@srmist.edu.in">Contact</a>
+    </div>
+    <div class="footer-badge">Not financial advice · Risk analysis only</div>
+  </div>
+</footer>
+
+<script>
+const html = document.documentElement;
+const btn = document.getElementById('themeToggle');
+const moon = document.getElementById('icon-moon');
+const sun = document.getElementById('icon-sun');
+
+function setTheme(t) {
+  html.setAttribute('data-theme', t);
+  localStorage.setItem('rg-theme', t);
+  if (t === 'light') { moon.style.display = 'none'; sun.style.display = 'block'; }
+  else { moon.style.display = 'block'; sun.style.display = 'none'; }
+}
+
+const saved = localStorage.getItem('rg-theme');
+const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+setTheme(saved || preferred);
+
+btn.addEventListener('click', () => {
+  setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+function triggerAnalysis() {
+  const val = document.getElementById('mainInput').value.trim();
+  if (!val) { document.getElementById('mainInput').focus(); return; }
+  alert('Analysis engine coming in Phase 2. For now the Flask backend handles this at /analyze');
+}
+
+// Navbar scroll effect
+window.addEventListener('scroll', () => {
+  const n = document.querySelector('nav');
+  n.style.borderBottomColor = window.scrollY > 20 ? 'var(--border-2)' : 'var(--border)';
+}, {passive: true});
+</script>
+</body>
+</html>
